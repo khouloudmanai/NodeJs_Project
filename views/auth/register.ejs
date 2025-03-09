@@ -4,37 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inscription</title>
-  <script>
-    async function handleRegister(event) {
-      event.preventDefault();
-
-      const formData = new FormData(event.target);
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.get('name'),
-          email: formData.get('email'),
-          password: formData.get('password'),
-          role: formData.get('role'),
-        }),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        window.location.href = result.redirect;
-      } else {
-        alert(result.message || 'Une erreur s\'est produite lors de l\'inscription.');
-      }
+  <style>
+    .error-message {
+      color: red;
+      margin-top: 10px;
     }
-  </script>
+  </style>
 </head>
 <body>
   <h1>Inscription</h1>
-  <form onsubmit="handleRegister(event)">
+  <form id="registerForm">
     <label for="name">Nom:</label>
     <input type="text" id="name" name="name" required>
     <br>
@@ -53,6 +32,41 @@
     <br>
     <button type="submit">S'inscrire</button>
   </form>
-  <p>Déjà un compte? <a href="/login">Connectez-vous ici</a>.</p>
+  <div id="errorMessage" class="error-message"></div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const role = document.getElementById('role').value;
+
+      const errorMessage = document.getElementById('errorMessage');
+      errorMessage.textContent = ''; // Effacer les messages d'erreur précédents
+
+      try {
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name, email, password, role })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          // Rediriger vers la page de connexion
+          window.location.href = data.redirect;
+        } else {
+          // Afficher un message d'erreur
+          errorMessage.textContent = data.message || 'Une erreur s\'est produite lors de l\'inscription.';
+        }
+      } catch (error) {
+        console.error('Erreur lors de l\'inscription:', error);
+        errorMessage.textContent = 'Une erreur s\'est produite lors de l\'inscription.';
+      }
+    });
+  </script>
 </body>
 </html>

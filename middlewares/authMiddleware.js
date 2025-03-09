@@ -1,20 +1,20 @@
 const jwt = require('jsonwebtoken');
 
-const authMiddleware = (req, res, next) => {
-  const token = req.cookies.token; // Lire le token depuis le cookie
-
-  if (!token) {
-    return res.status(401).json({ success: false, message: 'Accès non autorisé.' });
+const authenticate = (req, res, next) => {
+  const authHeader = req.header('Authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).send({ error: "Non autorisé, token manquant" });
   }
+
+  const token = authHeader.split(' ')[1]; // Extract the token from the header
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // Ajouter les informations de l'utilisateur à la requête
+    req.user = decoded; // L'utilisateur est maintenant accessible dans req.user
     next();
   } catch (err) {
-    console.error('Erreur de vérification du token:', err.message);
-    res.status(401).json({ success: false, message: 'Token invalide.' });
+    return res.status(401).send({ error: "Token invalide" });
   }
 };
 
-module.exports = authMiddleware;
+module.exports = authenticate;

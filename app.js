@@ -1,48 +1,41 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
 const cors = require('cors');
 const path = require('path');
-const session = require('express-session');
-const cookieParser = require('cookie-parser'); // Ajout de cookie-parser
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const appointmentRoutes = require('./routes/appointmentRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
-const authMiddleware = require('./middlewares/authMiddleware'); // Middleware d'authentification
-
-dotenv.config();
+const authentication = require('./middlewares/authMiddleware'); // Ensure the middleware is imported
+const User = require('./models/User'); // Ensure you have a User model defined
 
 const app = express();
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:7000', // Remplacez par l'URL de votre frontend
-  credentials: true, // Autoriser les cookies
+  origin: 'http://localhost:7000',
+  credentials: true,
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser()); // Utiliser cookie-parser pour gérer les cookies
-
-// Configuration des sessions
-app.use(session({
-  secret: process.env.JWT_SECRET || 'votre_clé_secrète',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false } // Mettre `true` si vous utilisez HTTPS
-}));
 
 // Configuration du moteur de vue EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Connexion à MongoDB
-mongoose.connect(process.env.DB_URI)
-  .then(() => console.log('Connecté à MongoDB'))
-  .catch(err => {
-    console.error('Erreur de connexion à MongoDB', err);
-    process.exit(1);
-  });
+// Connexion à MongoDB avec gestion des erreurs améliorée
+mongoose.connect(process.env.DB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('✅ Connecté à MongoDB'))
+.catch(err => {
+  console.error('❌ Erreur de connexion à MongoDB :', err);
+  process.exit(1);
+});
 
 // Routes API
 app.use('/api/auth', authRoutes);
@@ -54,26 +47,44 @@ app.use('/api/notifications', notificationRoutes);
 app.get('/register', (req, res) => {
   res.render('auth/register', { title: 'Inscription' });
 });
-
 app.get('/login', (req, res) => {
   res.render('auth/login', { title: 'Connexion' });
 });
 
+// Route pour la connexion
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).send({ message: 'Utilisateur non trouvé' });
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).send({ message: 'Identifiants invalides' });
+    }
+    const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.status(200).json({ success: true, token, redirect: user.role === 'client' ? '/client' : user.role === 'professional' ? '/professional' : '/admin' });
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+  }
+});
+
 // Routes protégées avec le middleware d'authentification
-app.get('/client', authMiddleware, (req, res) => {
-  res.render('client', { title: 'Tableau de bord Client', user: req.user });
+app.get('/client', authentication, (req, res) => {
+  res.render('users/client', { title: 'Tableau de bord Client', user: req.user });
 });
 
-app.get('/professional', authMiddleware, (req, res) => {
-  res.render('professional', { title: 'Tableau de bord Professionnel', user: req.user });
+app.get('/professional', authentication, (req, res) => {
+  res.render('users/professional', { title: 'Tableau de bord Professionnel', user: req.user });
 });
 
-app.get('/admin', authMiddleware, (req, res) => {
-  res.render('admin', { title: 'Tableau de bord Admin', user: req.user });
+app.get('/admin', authentication, (req, res) => {
+  res.render('users/admin', { title: 'Tableau de bord Admin', user: req.user });
 });
 
 app.get('/', (req, res) => {
-  const user = req.user || null; // Utiliser req.user au lieu de req.session.user
+  const user = req.user || null;
   res.render('index', { title: 'Accueil', user });
 });
 
@@ -84,10 +95,13 @@ app.use((req, res) => {
 
 // Middleware pour gérer les erreurs globales
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('Erreur serveur:', err);
   res.status(500).render('500', { title: 'Erreur serveur' });
 });
 
 // Démarrage du serveur
 const PORT = process.env.PORT || 7000;
-app.listen(PORT, () => console.log(`Serveur en cours d'exécution sur le port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
+  console.log('SECRET_KEY:', process.env.JWT_SECRET);
+});

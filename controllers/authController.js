@@ -12,11 +12,15 @@ exports.register = async (req, res) => {
       return res.status(400).json({ msg: 'User already exists' });
     }
 
-    user = new User({ name, email, password, role });
+    // Hachage du mot de passe
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Création de l'utilisateur avec le mot de passe haché
+    user = new User({ name, email, password: hashedPassword, role });
 
     await user.save();
 
-    // Redirect to login page after successful registration
     res.redirect('/login');
   } catch (err) {
     console.error('Error during registration:', err.message);

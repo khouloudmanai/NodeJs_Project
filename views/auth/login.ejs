@@ -35,16 +35,18 @@
 
       try {
         const response = await fetch('/api/auth/login', {
-          method: 'POST',
+          method: 'POST', // Use POST method for login
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ email, password }),
-          credentials: 'include' // Inclure les cookies dans la requête
+          body: JSON.stringify({ email, password })
         });
 
         const data = await response.json();
         if (data.success) {
+          // Stocker le token dans localStorage
+          localStorage.setItem('token', data.token);
+
           // Rediriger vers la page appropriée
           window.location.href = data.redirect;
         } else {
@@ -56,6 +58,38 @@
         errorMessage.textContent = 'Une erreur s\'est produite lors de la connexion.';
       }
     });
+
+    // Ajouter le token dans les en-têtes des requêtes pour les routes protégées
+    function addAuthHeader(request) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        request.setRequestHeader('Authorization', `Bearer ${token}`);
+      }
+    }
+
+    // Exemple d'utilisation de la fonction addAuthHeader pour une requête GET
+    async function fetchProtectedData() {
+      const request = new XMLHttpRequest();
+      request.open('GET', '/client', true);
+      addAuthHeader(request);
+      request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+          // Success!
+          console.log(request.responseText);
+        } else {
+          // We reached our target server, but it returned an error
+          console.error('Erreur lors de la récupération des données protégées:', request.responseText);
+        }
+      };
+      request.onerror = function() {
+        // There was a connection error of some sort
+        console.error('Erreur de connexion');
+      };
+      request.send();
+    }
+
+    // Appeler la fonction fetchProtectedData pour tester la récupération des données protégées
+    fetchProtectedData();
   </script>
 </body>
 </html>
