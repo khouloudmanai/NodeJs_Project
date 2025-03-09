@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+</head>
+<body>
+    <h1>Tableau de bord Admin</h1>
+    <% if (user) { %>
+        <p>Bienvenue, <%= user.name %>!</p>
+    <% } else { %>
+        <p>Veuillez vous connecter pour accéder à cette page.</p>
+    <% } %>
+    <a href="/api/users">Gérer les utilisateurs</a>
+</body>
+</html>

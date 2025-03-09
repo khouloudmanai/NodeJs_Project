@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+</head>
+<body>
+  <h1>Accueil</h1>
+  <% if (user) { %>
+    <p>Bienvenue, <%= user.name %>!</p>
+    <a href="/client">Tableau de bord Client</a>
+    <a href="/professional">Tableau de bord Professionnel</a>
+    <a href="/admin">Tableau de bord Admin</a>
+  <% } else { %>
+    <p>Veuillez vous <a href="/login">connecter</a> ou vous <a href="/register">inscrire</a>.</p>
+  <% } %>
+</body>
+</html>

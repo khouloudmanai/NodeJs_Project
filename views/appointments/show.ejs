@@ -1,0 +1,11 @@
+<h1>Détails du rendez-vous</h1>
+
+<p>Date : <%= appointment.date %></p>
+<p>Durée : <%= appointment.duration %> minutes</p>
+<p>Statut : <%= appointment.status %></p>
+<p>Notes : <%= appointment.notes %></p>
+
+<a href="/appointments/<%= appointment._id %>/edit">Modifier</a>
+<form action="/appointments/<%= appointment._id %>/delete" method="POST">
+  <button type="submit">Annuler</button>
+</form>

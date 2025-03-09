@@ -1,0 +1,13 @@
+<h1>Mes rendez-vous</h1>
+
+<a href="/appointments/create">Créer un rendez-vous</a>
+
+<ul>
+  <% appointments.forEach(appointment => { %>
+    <li>
+      <a href="/appointments/<%= appointment._id %>">
+        <%= appointment.date %> - <%= appointment.status %>
+      </a>
+    </li>
+  <% }) %>
+</ul>

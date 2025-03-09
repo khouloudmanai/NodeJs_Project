@@ -1,0 +1,41 @@
+<%- include('../layouts/main') %>
+
+<h1>Modifier le rendez-vous</h1>
+
+<% if (messages.error) { %>
+  <div class="alert alert-error">
+    <%= messages.error %>
+  </div>
+<% } %>
+<% if (messages.success) { %>
+  <div class="alert alert-success">
+    <%= messages.success %>
+  </div>
+<% } %>
+
+<form action="/appointments/<%= appointment._id %>" method="POST">
+  <div>
+    <label for="date">Date :</label>
+    <input type="datetime-local" id="date" name="date" value="<%= new Date(appointment.date).toISOString().slice(0, 16) %>" required>
+  </div>
+  <div>
+    <label for="duration">Durée (minutes) :</label>
+    <input type="number" id="duration" name="duration" value="<%= appointment.duration %>" required>
+  </div>
+  <div>
+    <label for="notes">Notes :</label>
+    <textarea id="notes" name="notes"><%= appointment.notes %></textarea>
+  </div>
+  <div>
+    <label for="status">Statut :</label>
+    <select id="status" name="status" required>
+      <option value="pending" <%= appointment.status === 'pending' ? 'selected' : '' %>>En attente</option>
+      <option value="confirmed" <%= appointment.status === 'confirmed' ? 'selected' : '' %>>Confirmé</option>
+      <option value="cancelled" <%= appointment.status === 'cancelled' ? 'selected' : '' %>>Annulé</option>
+      <option value="completed" <%= appointment.status === 'completed' ? 'selected' : '' %>>Terminé</option>
+    </select>
+  </div>
+  <button type="submit">Enregistrer les modifications</button>
+</form>
+
+<a href="/appointments/<%= appointment._id %>">Retour aux détails</a>
