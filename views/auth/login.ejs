@@ -9,8 +9,12 @@
       color: red;
       margin-top: 10px;
     }
+    .loading {
+      display: none;
+    }
   </style>
 </head>
+
 <body>
   <h1>Connexion</h1>
   <form id="loginForm">
@@ -24,72 +28,92 @@
   </form>
   <div id="errorMessage" class="error-message"></div>
 
+  <!-- Indicateur de chargement -->
+  <div id="loading" class="loading">Chargement...</div>
+
   <script>
+    // Fonction pour afficher ou masquer le chargement
+    function toggleLoading(show) {
+      const loading = document.getElementById('loading');
+      loading.style.display = show ? 'block' : 'none';
+    }
+
+    // Gestion de la soumission du formulaire
     document.getElementById('loginForm').addEventListener('submit', async function(event) {
       event.preventDefault();
+
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-
       const errorMessage = document.getElementById('errorMessage');
+      const submitButton = event.target.querySelector('button');
       errorMessage.textContent = ''; // Effacer les messages d'erreur précédents
+      submitButton.disabled = true;  // Désactiver le bouton pendant le chargement
 
       try {
+        // Afficher l'indicateur de chargement
+        toggleLoading(true);
+
         const response = await fetch('/api/auth/login', {
-          method: 'POST', // Use POST method for login
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
 
         const data = await response.json();
+
+        // Cacher l'indicateur de chargement
+        toggleLoading(false);
+
         if (data.success) {
           // Stocker le token dans localStorage
           localStorage.setItem('token', data.token);
 
-          // Rediriger vers la page appropriée
+          // Rediriger selon l'URL spécifiée
           window.location.href = data.redirect;
         } else {
-          // Afficher un message d'erreur
           errorMessage.textContent = data.message || 'Identifiants invalides.';
         }
       } catch (error) {
         console.error('Erreur lors de la connexion:', error);
         errorMessage.textContent = 'Une erreur s\'est produite lors de la connexion.';
+        toggleLoading(false);
+      } finally {
+        submitButton.disabled = false;  // Réactiver le bouton après la soumission
       }
     });
 
-    // Ajouter le token dans les en-têtes des requêtes pour les routes protégées
-    function addAuthHeader(request) {
-      const token = localStorage.getItem('token');
-      if (token) {
-        request.setRequestHeader('Authorization', `Bearer ${token}`);
+    // Fonction pour ajouter l'en-tête Authorization avec le token
+   // Fonction pour ajouter automatiquement le token aux requêtes
+function addAuthHeader(options = {}) {
+  const token = localStorage.getItem('token'); // Récupérer le token depuis localStorage
+  if (!options.headers) {
+    options.headers = {};
+  }
+  if (token) {
+    options.headers['Authorization'] = `Bearer ${token}`; // Ajouter l'en-tête Authorization
+  }
+  return options;
+}
+
+
+    // Fonction pour récupérer les rendez-vous protégés
+    async function fetchAppointments() {
+      try {
+        const response = await fetch('/api/appointments', addAuthHeader({ method: 'GET' }));
+        const data = await response.json();
+
+        if (response.ok) {
+          console.log(' Rendez-vous reçus:', data);
+        } else {
+          console.error(' Erreur:', data.message);
+        }
+      } catch (error) {
+        console.error(' Erreur lors de la récupération des rendez-vous:', error);
       }
     }
 
-    // Exemple d'utilisation de la fonction addAuthHeader pour une requête GET
-    async function fetchProtectedData() {
-      const request = new XMLHttpRequest();
-      request.open('GET', '/client', true);
-      addAuthHeader(request);
-      request.onload = function() {
-        if (request.status >= 200 && request.status < 400) {
-          // Success!
-          console.log(request.responseText);
-        } else {
-          // We reached our target server, but it returned an error
-          console.error('Erreur lors de la récupération des données protégées:', request.responseText);
-        }
-      };
-      request.onerror = function() {
-        // There was a connection error of some sort
-        console.error('Erreur de connexion');
-      };
-      request.send();
-    }
-
-    // Appeler la fonction fetchProtectedData pour tester la récupération des données protégées
-    fetchProtectedData();
+    // Cette fonction doit être appelée après la connexion réussie
+    // fetchAppointments();  // Appel de la fonction pour tester la récupération des rendez-vous
   </script>
 </body>
 </html>
