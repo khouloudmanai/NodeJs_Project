@@ -1,20 +1,18 @@
 const jwt = require('jsonwebtoken');
 
-const authenticate = (req, res, next) => {
-  const authHeader = req.header('Authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).send({ error: "Non autorisé, token manquant" });
-  }
+const authentication = (req, res, next) => {
+    if (!req.session.token) {
+        return res.redirect('/login');
+    }
 
-  const token = authHeader.split(' ')[1]; // Extract the token from the header
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // L'utilisateur est maintenant accessible dans req.user
-    next();
-  } catch (err) {
-    return res.status(401).send({ error: "Token invalide" });
-  }
+    try {
+        const decoded = jwt.verify(req.session.token, process.env.JWT_SECRET);
+        req.user = decoded; // Ajoute les infos de l'utilisateur au `req`
+        next();
+    } catch (error) {
+        req.session.destroy();
+        return res.redirect('/login');
+    }
 };
 
-module.exports = authenticate;
+module.exports = authentication;
