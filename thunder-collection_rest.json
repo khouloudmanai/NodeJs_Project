@@ -1,0 +1,247 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "rest",
+    "collectionId": "e1ae59cb-f335-4b6e-9c87-551f3a23d260",
+    "dateExported": "2025-03-12T22:23:01.297Z",
+    "version": "1.2",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "99ec02b8-e883-4856-a45e-2f2cb8680651",
+            "colId": "e1ae59cb-f335-4b6e-9c87-551f3a23d260",
+            "containerId": "",
+            "name": "testing send-email",
+            "url": "http://localhost:5000/send-email",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2025-03-12T22:18:36.482Z",
+            "modified": "2025-03-12T22:18:36.482Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"to\": \"recipient@example.com\",\n  \"subject\": \"Test Email\",\n  \"text\": \"This is a test email.\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "087e9211-0d0d-4513-a1f6-394c774e6080",
+            "colId": "e1ae59cb-f335-4b6e-9c87-551f3a23d260",
+            "containerId": "",
+            "name": "get all appointments",
+            "url": "http://localhost:5000/appointments/all",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2025-03-12T22:19:59.117Z",
+            "modified": "2025-03-12T22:19:59.117Z",
+            "headers": []
+        },
+        {
+            "_id": "406e3293-5926-46ca-87ae-2405787054a1",
+            "colId": "e1ae59cb-f335-4b6e-9c87-551f3a23d260",
+            "containerId": "",
+            "name": "create user",
+            "url": "http://localhost:5000/users/create",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2025-03-12T22:20:06.288Z",
+            "modified": "2025-03-12T22:20:06.288Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\":\"samineww\",\n  \"email\":\"samineww@gmail.com\",\n  \"password\":\"bonjoursami\",\n  \"role\":\"client\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "7d5fcf43-1b75-4fd6-a2b5-e1b37cc7a131",
+            "colId": "e1ae59cb-f335-4b6e-9c87-551f3a23d260",
+            "containerId": "",
+            "name": "delete appointement",
+            "url": "http://localhost:5000/appointments/delete/67d1f3d45bf916746d980305",
+            "method": "DELETE",
+            "sortNum": 40000,
+            "created": "2025-03-12T22:20:14.276Z",
+            "modified": "2025-03-12T22:20:14.276Z",
+            "headers": []
+        },
+        {
+            "_id": "06534d8a-e8d0-4c52-91a8-92cc9397f809",
+            "colId": "e1ae59cb-f335-4b6e-9c87-551f3a23d260",
+            "containerId": "",
+            "name": "get appointments",
+            "url": "http://localhost:5000/appointments/67d1f3d45bf916746d980305",
+            "method": "GET",
+            "sortNum": 50000,
+            "created": "2025-03-12T22:20:21.564Z",
+            "modified": "2025-03-12T22:20:21.564Z",
+            "headers": []
+        },
+        {
+            "_id": "a9487c85-9601-45ae-b07b-abe005f544a7",
+            "colId": "e1ae59cb-f335-4b6e-9c87-551f3a23d260",
+            "containerId": "",
+            "name": "update appointment",
+            "url": "http://localhost:5000/appointments/update/67d1f3d45bf916746d980305",
+            "method": "PUT",
+            "sortNum": 60000,
+            "created": "2025-03-12T22:20:29.699Z",
+            "modified": "2025-03-12T22:20:29.699Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"user\": \"67d1f3d45bf916746d980305\",\n  \"name\": \"saif2025\",\n  \"professionel\": \"plombier\",\n  \"date\": \"2025-03-11T00:00:00.000Z\",\n  \"status\": \"scheduled\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "d5c6ee32-c6de-46da-97be-4dd387f48a49",
+            "colId": "e1ae59cb-f335-4b6e-9c87-551f3a23d260",
+            "containerId": "",
+            "name": "update appointment",
+            "url": "http://localhost:5000/appointments/update/67d1f3d45bf916746d980305",
+            "method": "PUT",
+            "sortNum": 70000,
+            "created": "2025-03-12T22:20:37.406Z",
+            "modified": "2025-03-12T22:20:37.406Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"user\": \"67d1f3d45bf916746d980305\",\n  \"name\": \"saif2025\",\n  \"professionel\": \"plombier\",\n  \"date\": \"2025-03-11T00:00:00.000Z\",\n  \"status\": \"scheduled\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "1016ad4e-4729-4482-8a12-723357cb562a",
+            "colId": "e1ae59cb-f335-4b6e-9c87-551f3a23d260",
+            "containerId": "",
+            "name": "create appoinments",
+            "url": "http://localhost:5000/appointments/create",
+            "method": "POST",
+            "sortNum": 80000,
+            "created": "2025-03-12T22:20:48.679Z",
+            "modified": "2025-03-12T22:20:48.679Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"user\": \"67d1f3d45bf916746d980305\",\n  \"name\": \"saif20255\",\n  \"professionel\": \"User\",\n  \"date\": \"2025-03-11T00:00:00.000Z\",\n  \"status\": \"scheduled\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "c064b2b4-e726-40ff-b82d-2cccc528eb9d",
+            "colId": "e1ae59cb-f335-4b6e-9c87-551f3a23d260",
+            "containerId": "",
+            "name": "Verify",
+            "url": "http://localhost:5000/auth/me",
+            "method": "GET",
+            "sortNum": 90000,
+            "created": "2025-03-12T22:20:55.304Z",
+            "modified": "2025-03-12T22:20:55.304Z",
+            "headers": [],
+            "auth": {
+                "type": "bearer",
+                "bearer": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2QxZjNkNDViZjkxNjc0NmQ5ODAzMDUiLCJpYXQiOjE3NDE4MTI4ODZ9.7He3cN29BsFyovxaQT7tJkpVAkybrWhFlFTTxeQP_NQ"
+            }
+        },
+        {
+            "_id": "0f213aa5-54df-4064-9d07-a522120726cf",
+            "colId": "e1ae59cb-f335-4b6e-9c87-551f3a23d260",
+            "containerId": "",
+            "name": "Login User",
+            "url": "http://localhost:5000/auth/login",
+            "method": "POST",
+            "sortNum": 100000,
+            "created": "2025-03-12T22:21:02.962Z",
+            "modified": "2025-03-12T22:21:02.962Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"email\":\"saifridene2222@gmail.com\",\n  \"password\":\"bonjour\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "754f8985-00ff-47f6-bfc9-5b32ef86a626",
+            "colId": "e1ae59cb-f335-4b6e-9c87-551f3a23d260",
+            "containerId": "",
+            "name": "Register User",
+            "url": "http://localhost:5000/auth/register",
+            "method": "POST",
+            "sortNum": 110000,
+            "created": "2025-03-12T22:21:09.013Z",
+            "modified": "2025-03-12T22:21:09.013Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\":\"saif20255\",\n  \"email\":\"saifridene2222@gmail.com\",\n  \"password\":\"bonjour\",\n  \"role\":\"client\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "b5fdf32e-ea58-444f-9c88-dfe824270e55",
+            "colId": "e1ae59cb-f335-4b6e-9c87-551f3a23d260",
+            "containerId": "",
+            "name": "delete user by email",
+            "url": "http://localhost:5000/users/delete/saifridene2025@gmail.com",
+            "method": "DELETE",
+            "sortNum": 120000,
+            "created": "2025-03-12T22:21:15.005Z",
+            "modified": "2025-03-12T22:21:15.005Z",
+            "headers": []
+        },
+        {
+            "_id": "f0129290-9f5f-4342-9d98-c1d7807417a3",
+            "colId": "e1ae59cb-f335-4b6e-9c87-551f3a23d260",
+            "containerId": "",
+            "name": "update user by email",
+            "url": "http://localhost:5000/users/update/saifridene2025@gmail.com",
+            "method": "PUT",
+            "sortNum": 130000,
+            "created": "2025-03-12T22:21:22.185Z",
+            "modified": "2025-03-12T22:21:22.185Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\":\"saifeddineridene\",\n  \"email\":\"saifridene2025@gmail.com\",\n  \"password\":\"bonjoursaif\",\n  \"role\":\"admin\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "5959485f-6070-4dd4-8b9f-6420e312b790",
+            "colId": "e1ae59cb-f335-4b6e-9c87-551f3a23d260",
+            "containerId": "",
+            "name": "get by email",
+            "url": "http://localhost:5000/users/saifridene2025@gmail.com",
+            "method": "GET",
+            "sortNum": 140000,
+            "created": "2025-03-12T22:21:28.840Z",
+            "modified": "2025-03-12T22:21:28.840Z",
+            "headers": []
+        },
+        {
+            "_id": "f30c6e78-81ea-4ff3-b2bd-94f82187ec89",
+            "colId": "e1ae59cb-f335-4b6e-9c87-551f3a23d260",
+            "containerId": "",
+            "name": "get all users",
+            "url": "http://localhost:5000/users/all",
+            "method": "GET",
+            "sortNum": 150000,
+            "created": "2025-03-12T22:21:34.608Z",
+            "modified": "2025-03-12T22:21:34.608Z",
+            "headers": []
+        },
+        {
+            "_id": "19a80796-a454-49ee-b419-82a9ae20be98",
+            "colId": "e1ae59cb-f335-4b6e-9c87-551f3a23d260",
+            "containerId": "",
+            "name": "hello word",
+            "url": "http://localhost:5000/",
+            "method": "GET",
+            "sortNum": 160000,
+            "created": "2025-03-12T22:21:50.988Z",
+            "modified": "2025-03-12T22:21:50.988Z",
+            "headers": []
+        }
+    ],
+    "ref": "NL8VITOc_rX8dM5Oq_IZXCMQw6LLzdtqwmAbc2s3ywdahZoV_nii75buHBHGhTO6teJsrZZLx3DFSyKv0Q5a4Q"
+}
