@@ -8,100 +8,67 @@ const bcrypt = require('bcrypt');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const appointmentRoutes = require('./routes/appointmentRoutes');
-const notificationRoutes = require('./routes/notificationRoutes');
-const authentication = require('./middlewares/authMiddleware'); // Ensure the middleware is imported
-const User = require('./models/User'); // Ensure you have a User model defined
+//const notificationRoutes = require('./routes/notificationRoutes');
+const { authenticate } = require('./middlewares/authMiddleware');
+const User = require('./models/user');
+const Emailservice = require('./mailer/Emailservice');
 
 const app = express();
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:7000',
+  origin: 'http://localhost:5000',
   credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Configuration du moteur de vue EJS
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
 
-// Connexion à MongoDB avec gestion des erreurs améliorée
-mongoose.connect(process.env.DB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+
+
+// Connexion à MongoDB
+mongoose.connect(process.env.DB_URI)
 .then(() => console.log('✅ Connecté à MongoDB'))
 .catch(err => {
   console.error('❌ Erreur de connexion à MongoDB :', err);
   process.exit(1);
 });
 
+app.use(express.json());
 // Routes API
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/appointments', appointmentRoutes);
-app.use('/api/notifications', notificationRoutes);
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/appointments', appointmentRoutes);
 
-// Routes pour les pages EJS
-app.get('/register', (req, res) => {
-  res.render('auth/register', { title: 'Inscription' });
-});
-app.get('/login', (req, res) => {
-  res.render('auth/login', { title: 'Connexion' });
+const emailService = new Emailservice({
+  host: process.env.EMAIL_HOST,
+  port: parseInt(process.env.EMAIL_PORT || '587'),
+  secure: process.env.EMAIL_SECURE === 'true', // Corrected to 'true' for SSL
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD,
+  },
 });
 
-// Route pour la connexion
-app.post('/api/auth/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).send({ message: 'Utilisateur non trouvé' });
-    }
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(400).send({ message: 'Identifiants invalides' });
-    }
-    const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.status(200).json({ success: true, token, redirect: user.role === 'client' ? '/client' : user.role === 'professional' ? '/professional' : '/admin' });
-  } catch (error) {
-    res.status(400).send({ message: error.message });
+app.post('/send-email', async (req, res) => {
+  const { to, subject, text } = req.body;
+  const emailSent = await emailService.sendEmail({ to, subject, text });
+  if (emailSent) {
+    res.send({ message: "Email sent successfully" });
+  } else {
+    res.status(500).send({ message: "Failed to send email" });
   }
 });
 
-// Routes protégées avec le middleware d'authentification
-app.get('/client', authentication, (req, res) => {
-  res.render('users/client', { title: 'Tableau de bord Client', user: req.user });
+app.get("/", (req, res) => {
+  res.send("Hello World!");
 });
 
-app.get('/professional', authentication, (req, res) => {
-  res.render('users/professional', { title: 'Tableau de bord Professionnel', user: req.user });
-});
-
-app.get('/admin', authentication, (req, res) => {
-  res.render('users/admin', { title: 'Tableau de bord Admin', user: req.user });
-});
-
-app.get('/', (req, res) => {
-  const user = req.user || null;
-  res.render('index', { title: 'Accueil', user });
-});
-
-// Middleware pour gérer les erreurs 404
-app.use((req, res) => {
-  res.status(404).render('404', { title: 'Page non trouvée' });
-});
-
-// Middleware pour gérer les erreurs globales
-app.use((err, req, res, next) => {
-  console.error('Erreur serveur:', err);
-  res.status(500).render('500', { title: 'Erreur serveur' });
-});
 
 // Démarrage du serveur
-const PORT = process.env.PORT || 7000;
-app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
+const port = process.env.PORT || 7000;
+app.listen(port, () => {
+  console.log(`Server started on port ${port}`);
   console.log('SECRET_KEY:', process.env.JWT_SECRET);
 });

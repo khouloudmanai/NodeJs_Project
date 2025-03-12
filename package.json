@@ -4,7 +4,8 @@
     "description": "Application de gestion de rendez-vous",
     "main": "app.js",
     "scripts": {
-        "start": "nodemon app.js"
+        "start": "nodemon app.js",
+        "test-email": "node testEmailService.js"
     },
     "author": "Nom de l'auteur",
     "license": "ISC",
