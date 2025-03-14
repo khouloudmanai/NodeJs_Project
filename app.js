@@ -12,6 +12,7 @@ const appointmentRoutes = require('./routes/appointmentRoutes');
 const { authenticate } = require('./middlewares/authMiddleware');
 const User = require('./models/user');
 const Emailservice = require('./mailer/Emailservice');
+const eventRoutes = require('./routes/eventRoutes');
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/appointments', appointmentRoutes);
+app.use('/events', eventRoutes);
 
 const emailService = new Emailservice({
   host: process.env.EMAIL_HOST,
